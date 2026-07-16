@@ -1,0 +1,2220 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CSD Agentic Training — Whoz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── Reset & base ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:   #0c0625;
+      --green:  #34CBA4;
+      --green-dim: #2aaa87;
+      --green-light: rgba(52,203,164,.12);
+      --white:  #ffffff;
+      --gray-50:  #f8f9fb;
+      --gray-100: #f0f2f5;
+      --gray-200: #e2e6ec;
+      --gray-400: #9aa3b0;
+      --gray-600: #5a6475;
+      --gray-800: #2d3340;
+      --radius: 14px;
+      --radius-sm: 8px;
+      --shadow: 0 4px 24px rgba(12,6,37,.08);
+      --shadow-md: 0 8px 40px rgba(12,6,37,.13);
+      --transition: .2s cubic-bezier(.4,0,.2,1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--gray-50);
+      color: var(--gray-800);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ─── Layout ────────────────────────────────────────────────── */
+    .screen { display: none; min-height: 100vh; }
+    .screen.active { display: block; }
+
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* ─── Top bar ───────────────────────────────────────────────── */
+    .topbar {
+      background: var(--navy);
+      padding: 0 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      height: 56px;
+    }
+
+    .topbar-logo {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--green);
+    }
+
+    .topbar-title {
+      font-size: 13px;
+      color: rgba(255,255,255,.5);
+      flex: 1;
+    }
+
+    .topbar-back {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,.7);
+      font-family: inherit;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 0;
+      transition: color var(--transition);
+    }
+    .topbar-back:hover { color: var(--white); }
+    .topbar-back svg { flex-shrink: 0; }
+
+    /* ─── Hero (home) ───────────────────────────────────────────── */
+    .hero {
+      background: var(--navy);
+      padding: 56px 20px 48px;
+      text-align: center;
+    }
+
+    .hero-eyebrow {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--green);
+      background: rgba(52,203,164,.15);
+      border: 1px solid rgba(52,203,164,.3);
+      border-radius: 100px;
+      padding: 4px 14px;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      font-size: clamp(26px, 5vw, 40px);
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.2;
+      margin-bottom: 12px;
+      letter-spacing: -.02em;
+    }
+
+    .hero p {
+      font-size: 15px;
+      color: rgba(255,255,255,.55);
+      max-width: 480px;
+      margin: 0 auto 32px;
+    }
+
+    /* ─── Progress overview ─────────────────────────────────────── */
+    .progress-card {
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      max-width: 480px;
+      margin: 0 auto;
+      text-align: left;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 10px;
+    }
+
+    .progress-label span:first-child {
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(255,255,255,.5);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .progress-label span:last-child {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--white);
+    }
+
+    .progress-track {
+      height: 6px;
+      background: rgba(255,255,255,.1);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--green);
+      border-radius: 100px;
+      transition: width .6s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* ─── Module list ───────────────────────────────────────────── */
+    .modules-section {
+      padding: 40px 20px 32px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--gray-400);
+      margin-bottom: 16px;
+    }
+
+    .module-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .module-card {
+      background: var(--white);
+      border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      cursor: pointer;
+      transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      text-align: left;
+      width: 100%;
+      font-family: inherit;
+    }
+
+    .module-card:hover {
+      border-color: var(--green);
+      box-shadow: var(--shadow);
+      transform: translateY(-1px);
+    }
+
+    .module-card.completed {
+      border-color: var(--green);
+      background: linear-gradient(135deg, #fff 60%, rgba(52,203,164,.04));
+    }
+
+    .module-num {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--gray-100);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--gray-600);
+      flex-shrink: 0;
+      transition: background var(--transition), color var(--transition);
+    }
+
+    .module-card.completed .module-num {
+      background: var(--green-light);
+      color: var(--green-dim);
+    }
+
+    .module-card:hover .module-num {
+      background: var(--green-light);
+      color: var(--green-dim);
+    }
+
+    .module-info { flex: 1; min-width: 0; }
+
+    .module-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--gray-800);
+      margin-bottom: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .module-meta {
+      font-size: 12px;
+      color: var(--gray-400);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .module-meta .dot { opacity: .4; }
+
+    .module-status {
+      flex-shrink: 0;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 100px;
+    }
+
+    .badge-done {
+      background: var(--green-light);
+      color: var(--green-dim);
+    }
+
+    .badge-todo {
+      background: var(--gray-100);
+      color: var(--gray-400);
+    }
+
+    .chevron {
+      color: var(--gray-400);
+      flex-shrink: 0;
+      transition: transform var(--transition), color var(--transition);
+    }
+    .module-card:hover .chevron { transform: translateX(3px); color: var(--green); }
+
+    /* ─── Reset button ──────────────────────────────────────────── */
+    .reset-wrap {
+      text-align: center;
+      padding: 0 20px 40px;
+    }
+
+    .btn-reset {
+      background: none;
+      border: none;
+      font-family: inherit;
+      font-size: 12px;
+      color: var(--gray-400);
+      cursor: pointer;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      transition: color var(--transition), background var(--transition);
+    }
+    .btn-reset:hover { color: #e05252; background: rgba(224,82,82,.06); }
+
+    /* ─── Resource section ─────────────────────────────────────────────────── */
+    .resource-section {
+      padding: 0 20px 32px;
+    }
+
+    .resource-card {
+      background: linear-gradient(135deg, rgba(52,203,164,.04) 0%, rgba(52,203,164,.08) 100%);
+      border: 1.5px dashed rgba(52,203,164,.35);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      cursor: pointer;
+      transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition), background var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      text-align: left;
+      width: 100%;
+      font-family: inherit;
+    }
+
+    .resource-card:hover {
+      border-color: var(--green);
+      border-style: solid;
+      box-shadow: var(--shadow);
+      transform: translateY(-1px);
+      background: linear-gradient(135deg, rgba(52,203,164,.07) 0%, rgba(52,203,164,.13) 100%);
+    }
+
+    .resource-card.completed {
+      border-color: var(--green);
+      border-style: solid;
+    }
+
+    .resource-num {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: rgba(52,203,164,.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+      transition: background var(--transition);
+    }
+
+    .resource-card:hover .resource-num {
+      background: rgba(52,203,164,.25);
+    }
+
+    .badge-ref {
+      background: rgba(52,203,164,.08);
+      color: var(--green-dim);
+      border: 1px solid rgba(52,203,164,.25);
+    }
+
+    /* ─── Definition list styles ──────────────────────────────────────────── */
+    .definition-term {
+      font-weight: 700;
+      color: var(--green-dim);
+      font-size: 15px;
+      margin-top: 20px;
+      display: block;
+    }
+
+    .definition-body {
+      font-size: 14px;
+      color: var(--gray-600);
+      line-height: 1.7;
+      margin-bottom: 8px;
+      padding-left: 16px;
+      border-left: 2px solid var(--gray-200);
+    }
+
+    /* ─── Error table ─────────────────────────────────────────────────────── */
+    .error-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 14px;
+    }
+
+    .error-table th {
+      background: var(--navy);
+      color: var(--green);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      padding: 10px 14px;
+      text-align: left;
+    }
+
+    .error-table th:first-child { border-radius: var(--radius-sm) 0 0 0; }
+    .error-table th:last-child  { border-radius: 0 var(--radius-sm) 0 0; }
+
+    .error-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--gray-200);
+      color: var(--gray-600);
+      line-height: 1.5;
+      vertical-align: top;
+    }
+
+    .error-table tr:last-child td { border-bottom: none; }
+
+    .error-table tr:nth-child(even) td {
+      background: var(--gray-50);
+    }
+
+    @media (max-width: 600px) {
+      .error-table { font-size: 12px; }
+      .error-table td, .error-table th { padding: 8px 10px; }
+      .resource-card { padding: 16px 18px; }
+    }
+
+    /* ─── Module screen ─────────────────────────────────────────── */
+    .module-header {
+      background: var(--navy);
+      padding: 40px 20px 36px;
+    }
+
+    .module-header-inner {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .module-eyebrow {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 10px;
+    }
+
+    .module-header h2 {
+      font-size: clamp(20px, 4vw, 30px);
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.25;
+      letter-spacing: -.02em;
+      margin-bottom: 12px;
+    }
+
+    .module-header-meta {
+      font-size: 13px;
+      color: rgba(255,255,255,.45);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* ─── Content body ──────────────────────────────────────────── */
+    .content-body {
+      padding: 40px 20px;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .content-body h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--navy);
+      margin: 32px 0 12px;
+      letter-spacing: -.01em;
+    }
+    .content-body h3:first-child { margin-top: 0; }
+
+    .content-body h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--gray-800);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin: 24px 0 8px;
+    }
+
+    .content-body p {
+      font-size: 15px;
+      color: var(--gray-600);
+      line-height: 1.75;
+      margin-bottom: 16px;
+    }
+
+    .content-body ul, .content-body ol {
+      padding-left: 20px;
+      margin-bottom: 16px;
+    }
+
+    .content-body li {
+      font-size: 15px;
+      color: var(--gray-600);
+      line-height: 1.7;
+      margin-bottom: 6px;
+    }
+
+    .content-body strong { color: var(--gray-800); font-weight: 600; }
+
+    .callout {
+      background: var(--green-light);
+      border-left: 3px solid var(--green);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 14px 18px;
+      margin: 20px 0;
+    }
+
+    .callout p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--gray-800);
+    }
+
+    .callout strong { color: var(--navy); }
+
+    .info-box {
+      background: var(--white);
+      border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin: 20px 0;
+    }
+
+    .info-box .info-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--green-dim);
+      margin-bottom: 10px;
+    }
+
+    .info-box p, .info-box li {
+      font-size: 14px;
+      color: var(--gray-600);
+    }
+
+    .divider {
+      border: none;
+      border-top: 1.5px solid var(--gray-200);
+      margin: 32px 0;
+    }
+
+    /* ─── Quiz CTA ──────────────────────────────────────────────── */
+    .quiz-cta {
+      background: var(--navy);
+      border-radius: var(--radius);
+      padding: 28px 28px;
+      margin: 32px 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .quiz-cta-text h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--white);
+      margin: 0 0 4px;
+    }
+
+    .quiz-cta-text p {
+      font-size: 13px;
+      color: rgba(255,255,255,.45);
+      margin: 0;
+    }
+
+    /* ─── Buttons ───────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 12px 22px;
+      border-radius: var(--radius-sm);
+      border: none;
+      cursor: pointer;
+      transition: all var(--transition);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--green);
+      color: var(--navy);
+    }
+    .btn-primary:hover {
+      background: #3dddb5;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(52,203,164,.35);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--green);
+      border: 1.5px solid rgba(52,203,164,.4);
+    }
+    .btn-outline:hover {
+      background: var(--green-light);
+      border-color: var(--green);
+    }
+
+    .btn-ghost {
+      background: rgba(255,255,255,.08);
+      color: var(--white);
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,.14); }
+
+    /* ─── Quiz screen ───────────────────────────────────────────── */
+    .quiz-header {
+      background: var(--navy);
+      padding: 32px 20px 28px;
+    }
+
+    .quiz-header-inner {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .quiz-header p {
+      font-size: 13px;
+      color: rgba(255,255,255,.45);
+      margin-top: 6px;
+    }
+
+    .quiz-body {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 36px 20px 60px;
+    }
+
+    .question-block {
+      background: var(--white);
+      border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+
+    .question-num {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--green-dim);
+      margin-bottom: 10px;
+    }
+
+    .question-text {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--gray-800);
+      line-height: 1.5;
+      margin-bottom: 18px;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .option-label {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 16px;
+      border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: border-color var(--transition), background var(--transition);
+      font-size: 14px;
+      color: var(--gray-600);
+      line-height: 1.45;
+    }
+
+    .option-label:hover {
+      border-color: var(--green);
+      background: var(--green-light);
+      color: var(--gray-800);
+    }
+
+    .option-label input[type="radio"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--gray-200);
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 1px;
+      transition: border-color var(--transition), background var(--transition);
+      position: relative;
+    }
+
+    .option-label input[type="radio"]:checked {
+      border-color: var(--green);
+      background: var(--green);
+      box-shadow: inset 0 0 0 3px white;
+    }
+
+    .option-label:has(input:checked) {
+      border-color: var(--green);
+      background: var(--green-light);
+      color: var(--gray-800);
+      font-weight: 500;
+    }
+
+    /* Post-submit states */
+    .option-label.correct {
+      border-color: var(--green);
+      background: rgba(52,203,164,.15);
+      color: var(--navy);
+      font-weight: 500;
+    }
+
+    .option-label.wrong {
+      border-color: #e05252;
+      background: rgba(224,82,82,.08);
+      color: #c03a3a;
+    }
+
+    .option-label.was-correct {
+      border-color: var(--green);
+      background: rgba(52,203,164,.1);
+      color: var(--navy);
+    }
+
+    .option-label.disabled { cursor: default; pointer-events: none; }
+
+    .option-icon {
+      font-size: 14px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .quiz-submit-wrap {
+      margin-top: 24px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    /* ─── Result screen ─────────────────────────────────────────── */
+    .result-screen {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .result-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      font-size: 32px;
+    }
+
+    .result-icon.pass {
+      background: var(--green-light);
+      border: 2px solid var(--green);
+    }
+
+    .result-icon.fail {
+      background: rgba(224,82,82,.1);
+      border: 2px solid rgba(224,82,82,.3);
+    }
+
+    .result-screen h2 {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 10px;
+      letter-spacing: -.02em;
+    }
+
+    .result-screen .score {
+      font-size: 48px;
+      font-weight: 800;
+      color: var(--navy);
+      line-height: 1;
+      margin-bottom: 4px;
+      letter-spacing: -.04em;
+    }
+
+    .result-screen .score-label {
+      font-size: 14px;
+      color: var(--gray-400);
+      margin-bottom: 20px;
+    }
+
+    .result-screen .result-message {
+      font-size: 15px;
+      color: var(--gray-600);
+      max-width: 380px;
+      margin: 0 auto 32px;
+      line-height: 1.6;
+    }
+
+    .result-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    /* ─── Responsive ────────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      .module-card { padding: 16px 18px; }
+      .module-title { font-size: 14px; }
+      .quiz-cta { flex-direction: column; align-items: flex-start; }
+      .content-body { padding: 28px 16px; }
+      .quiz-body { padding: 24px 16px 48px; }
+      .hero { padding: 40px 20px 36px; }
+    }
+
+    /* ─── Animations ────────────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .screen.active > * {
+      animation: fadeUp .35s cubic-bezier(.4,0,.2,1) both;
+    }
+
+    .module-card {
+      animation: fadeUp .35s cubic-bezier(.4,0,.2,1) both;
+    }
+
+    .module-card:nth-child(2) { animation-delay: .04s; }
+    .module-card:nth-child(3) { animation-delay: .08s; }
+    .module-card:nth-child(4) { animation-delay: .12s; }
+    .module-card:nth-child(5) { animation-delay: .16s; }
+    .module-card:nth-child(6) { animation-delay: .20s; }
+    .module-card:nth-child(7) { animation-delay: .24s; }
+    .module-card:nth-child(8) { animation-delay: .28s; }
+    .module-card:nth-child(9) { animation-delay: .32s; }
+
+    .resource-card {
+      animation: fadeUp .35s cubic-bezier(.4,0,.2,1) both;
+      animation-delay: .36s;
+    }
+
+    /* ─── Shortcut table ──────────────────────────────────────────── */
+  .shortcut-group {
+    margin: 28px 0 0;
+  }
+
+  .shortcut-group-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--green-dim);
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1.5px solid var(--gray-200);
+  }
+
+  .shortcut-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .shortcut-item {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 12px;
+    align-items: baseline;
+    padding: 9px 14px;
+    border-radius: var(--radius-sm);
+    background: var(--white);
+    border: 1.5px solid var(--gray-200);
+    transition: border-color var(--transition), background var(--transition);
+  }
+
+  .shortcut-item:hover {
+    border-color: var(--green);
+    background: var(--green-light);
+  }
+
+  .shortcut-key {
+    font-family: 'Inter', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--navy);
+    letter-spacing: .02em;
+    white-space: nowrap;
+  }
+
+  .shortcut-desc {
+    font-size: 13px;
+    color: var(--gray-600);
+    line-height: 1.45;
+  }
+
+  @media (max-width: 520px) {
+    .shortcut-item {
+      grid-template-columns: 1fr;
+      gap: 3px;
+    }
+  }
+
+  /* ─── Scrollbar ─────────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 100px; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SCREEN: HOME
+═══════════════════════════════════════════════════════════════ -->
+<div id="screen-home" class="screen active">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="container">
+      <div class="hero-eyebrow">Whoz · Cercle CSD</div>
+      <h1>CSD Agentic Training</h1>
+      <p>Programme de formation autonome — Cercle CSD Whoz</p>
+
+      <div class="progress-card">
+        <div class="progress-label">
+          <span>Progression globale</span>
+          <span id="home-progress-text">0 / 9</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="home-progress-fill" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module list -->
+  <div class="modules-section">
+    <div class="container">
+      <div class="section-label">9 modules · Agentic AI literacy</div>
+      <div class="module-list" id="module-list"></div>
+    </div>
+  </div>
+
+  <!-- Bonus resource section -->
+  <div class="resource-section">
+    <div class="container">
+      <div class="section-label">Ressource complémentaire</div>
+      <div id="resource-list"></div>
+    </div>
+  </div>
+
+  <!-- Reset -->
+  <div class="reset-wrap">
+    <button class="btn-reset" onclick="resetProgress()">↺ Réinitialiser la progression</button>
+  </div>
+
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SCREEN: MODULE (content)
+═══════════════════════════════════════════════════════════════ -->
+<div id="screen-module" class="screen">
+
+  <div class="topbar">
+    <button class="topbar-back" onclick="goHome()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Accueil
+    </button>
+    <span class="topbar-logo">Whoz</span>
+  </div>
+
+  <div class="module-header">
+    <div class="module-header-inner">
+      <div class="module-eyebrow" id="mod-eyebrow">Module 1</div>
+      <h2 id="mod-title">Titre du module</h2>
+      <div class="module-header-meta">
+        <span id="mod-duration">15 min de lecture</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-body" id="mod-content"></div>
+
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SCREEN: QUIZ
+═══════════════════════════════════════════════════════════════ -->
+<div id="screen-quiz" class="screen">
+
+  <div class="topbar">
+    <button class="topbar-back" onclick="goToModule()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Retour au module
+    </button>
+    <span class="topbar-logo">Whoz</span>
+  </div>
+
+  <div class="quiz-header">
+    <div class="quiz-header-inner">
+      <div class="module-eyebrow" id="quiz-eyebrow">Quiz — Module 1</div>
+      <h2 id="quiz-title" style="font-size:clamp(18px,3.5vw,26px);font-weight:700;color:#fff;letter-spacing:-.02em;margin:6px 0 0">Titre</h2>
+      <p id="quiz-subtitle">5 questions · Seuil de réussite : 3/5</p>
+    </div>
+  </div>
+
+  <div class="quiz-body">
+    <div id="quiz-questions"></div>
+    <div class="quiz-submit-wrap">
+      <button class="btn btn-primary" id="quiz-submit-btn" onclick="submitQuiz()">
+        Valider mes réponses
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SCREEN: RESULT
+═══════════════════════════════════════════════════════════════ -->
+<div id="screen-result" class="screen">
+  <div class="result-screen">
+    <div class="result-icon" id="result-icon">🎉</div>
+    <div class="score" id="result-score">4/5</div>
+    <div class="score-label">questions correctes</div>
+    <h2 id="result-title">Module validé !</h2>
+    <p class="result-message" id="result-message">Bravo, tu maîtrises les concepts clés de ce module.</p>
+    <div class="result-actions">
+      <button class="btn btn-outline" id="result-retry-btn" onclick="retryQuiz()" style="display:none">↺ Réessayer le quiz</button>
+      <button class="btn btn-primary" onclick="goHome()">
+        Retour à l'accueil
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════════════
+
+var MODULES = [
+  {
+    id: 1,
+    title: 'De l\'automatisation à l\'agentivité',
+    duration: '12 min',
+    content:
+      '<h3>Automatisation classique vs IA agentique</h3>' +
+      '<p>Pendant des décennies, l\'automatisation a suivi un schéma simple : un humain définit chaque étape, la machine exécute. Un script RPA clique sur les mêmes boutons dans le même ordre. Un workflow Zapier déclenche la même action sur le même événement. <strong>La machine n\'improvise jamais.</strong></p>' +
+      '<p>L\'IA agentique rompt ce contrat. Un agent reçoit un <em>objectif</em>, pas une liste d\'instructions. Il perçoit son environnement (fichiers, APIs, résultats de recherche, retours d\'autres agents), raisonne sur ce qu\'il observe, choisit ses propres outils, exécute, observe le résultat, et <strong>s\'adapte</strong>.</p>' +
+      '<div class="callout"><p><strong>Analogie clé :</strong> L\'automatisation classique, c\'est un GPS qui te donne le chemin pas à pas. L\'IA agentique, c\'est un chauffeur qui connaît ta destination, gère les embouteillages, choisit de s\'arrêter à la station-service et te prévient si le trajet va changer.</p></div>' +
+      '<h3>Le cycle Percevoir → Raisonner → Agir</h3>' +
+      '<p>Tout agent agentique fonctionne selon une boucle fondamentale :</p>' +
+      '<ol>' +
+      '<li><strong>Percevoir</strong> — lire l\'état du monde : contenu d\'un fichier, résultat d\'une requête API, message d\'un utilisateur, output d\'un outil.</li>' +
+      '<li><strong>Raisonner</strong> — le LLM analyse la situation, décompose l\'objectif, sélectionne la prochaine action.</li>' +
+      '<li><strong>Agir</strong> — appel d\'outil, écriture de fichier, envoi de message, lancement d\'un sous-agent.</li>' +
+      '</ol>' +
+      '<p>Cette boucle se répète jusqu\'à ce que l\'objectif soit atteint ou qu\'une limite soit dépassée (tokens, étapes, timeout).</p>' +
+      '<h3>Ce qui change vraiment pour le CSD</h3>' +
+      '<p>Dans un contexte de Customer Success & Delivery, la différence est concrète :</p>' +
+      '<ul>' +
+      '<li><strong>Avant :</strong> Tu configures un rapport Jira qui s\'envoie chaque lundi. Il s\'envoie, que les données soient pertinentes ou non.</li>' +
+      '<li><strong>Après :</strong> Un agent surveille les tickets, détecte une anomalie, cherche le contexte dans Confluence, rédige un résumé adapté et te propose une action — sans que tu aies rien paramétré de spécifique.</li>' +
+      '</ul>' +
+      '<div class="info-box"><div class="info-title">Vocabulaire fondamental</div><ul>' +
+      '<li><strong>Agent :</strong> système IA capable de prendre des décisions autonomes pour atteindre un objectif.</li>' +
+      '<li><strong>Outil (tool) :</strong> fonction que l\'agent peut appeler (recherche web, lecture de fichier, API…).</li>' +
+      '<li><strong>Boucle agentique :</strong> cycle percevoir → raisonner → agir répété jusqu\'à complétion.</li>' +
+      '<li><strong>Autonomie :</strong> capacité à agir sans instruction pas-à-pas.</li>' +
+      '</ul></div>' +
+      '<hr class="divider">' +
+      '<div class="quiz-cta"><div class="quiz-cta-text"><h3>Prêt à valider ?</h3><p>5 questions · ~3 min</p></div>' +
+      '<button class="btn btn-primary" onclick="startQuiz(0)">Démarrer le quiz →</button></div>',
+    quiz: [
+      {
+        q: 'Quelle est la différence fondamentale entre automatisation classique et IA agentique ?',
+        options: [
+          'L\'automatisation classique utilise Python, l\'IA agentique utilise JavaScript',
+          'L\'IA agentique reçoit un objectif et s\'adapte ; l\'automatisation classique suit des instructions fixes',
+          'L\'IA agentique est plus rapide mais moins fiable',
+          'Il n\'y a pas de différence fondamentale, c\'est juste du marketing'
+        ],
+        answer: 1
+      },
+      {
+        q: 'Dans le cycle agentique, que fait la phase "Raisonner" ?',
+        options: [
+          'Elle exécute directement l\'action sans analyse',
+          'Elle lit les fichiers et APIs disponibles',
+          'Le LLM analyse la situation et sélectionne la prochaine action',
+          'Elle envoie les résultats à l\'utilisateur'
+        ],
+        answer: 2
+      },
+      {
+        q: 'Un "outil" (tool) dans le contexte agentique, c\'est :',
+        options: [
+          'Un logiciel de gestion de projet',
+          'Une fonction que l\'agent peut appeler (API, recherche, fichier…)',
+          'Un prompt système spécial',
+          'Un modèle de langage secondaire'
+        ],
+        answer: 1
+      },
+      {
+        q: 'Quelle analogie décrit le mieux l\'IA agentique ?',
+        options: [
+          'Un GPS pas-à-pas',
+          'Une calculatrice avancée',
+          'Un chauffeur qui gère les imprévus pour atteindre ta destination',
+          'Un moteur de recherche'
+        ],
+        answer: 2
+      },
+      {
+        q: 'Qu\'est-ce qui déclenche la fin de la boucle agentique ?',
+        options: [
+          'L\'utilisateur doit toujours l\'arrêter manuellement',
+          'L\'objectif est atteint ou une limite (tokens, étapes, timeout) est dépassée',
+          'La boucle ne s\'arrête jamais',
+          'Le premier appel d\'outil réussi'
+        ],
+        answer: 1
+      }
+    ]
+  },
+  {
+    id: 2,
+    title: 'LLM, contexte & prompt engineering',
+    duration: '15 min',
+    content:
+      '<h3>Comment un LLM "pense"</h3>' +
+      '<p>Un Large Language Model ne "comprend" pas au sens humain. Il prédit le token suivant le plus probable, compte tenu de tout ce qui précède dans la <strong>fenêtre de contexte</strong>. Cette fenêtre est le seul univers du modèle : ce qui n\'y est pas n\'existe pas pour lui.</p>' +
+      '<p>Conséquence directe : la qualité de ce que tu mets dans le contexte détermine directement la qualité de la réponse. C\'est le principe fondateur du <em>prompt engineering</em>.</p>' +
+      '<h3>Anatomie d\'un prompt efficace</h3>' +
+      '<div class="info-box"><div class="info-title">Les 4 composantes</div><ol>' +
+      '<li><strong>Rôle / Persona</strong> — qui est l\'agent ? ("Tu es un expert en delivery IT…")</li>' +
+      '<li><strong>Contexte</strong> — quelle situation ? quelles contraintes ? quelles données ?</li>' +
+      '<li><strong>Tâche</strong> — que doit-il faire exactement ?</li>' +
+      '<li><strong>Format de sortie</strong> — JSON, markdown, liste, longueur…</li>' +
+      '</ol></div>' +
+      '<h3>Techniques avancées</h3>' +
+      '<h4>Chain-of-Thought (CoT)</h4>' +
+      '<p>Demander au modèle de <em>raisonner étape par étape</em> avant de répondre améliore drastiquement la précision sur les tâches complexes. Ajouter "Réfléchis étape par étape" ou "Think step by step" dans le prompt active ce mode.</p>' +
+      '<h4>Few-Shot prompting</h4>' +
+      '<p>Fournir 2 à 5 exemples entrée/sortie dans le prompt guide le modèle sur le format et le niveau de détail attendus. Particulièrement utile pour les tâches de classification ou d\'extraction structurée.</p>' +
+      '<h4>Gestion de la fenêtre de contexte</h4>' +
+      '<p>Les modèles récents gèrent 128k à 1M tokens, mais <strong>plus le contexte est long, plus l\'attention se dilue</strong>. Bonnes pratiques :</p>' +
+      '<ul>' +
+      '<li>Placer les informations critiques au début ET à la fin du prompt</li>' +
+      '<li>Résumer les historiques longs plutôt que de les inclure bruts</li>' +
+      '<li>Utiliser RAG (Retrieval-Augmented Generation) pour n\'injecter que les chunks pertinents</li>' +
+      '</ul>' +
+      '<div class="callout"><p><strong>Règle d\'or :</strong> Un prompt ambigu produit une réponse ambiguë. Sois aussi précis avec l\'IA qu\'avec un collaborateur junior qui découvre le sujet.</p></div>' +
+      '<h3>Température et paramètres</h3>' +
+      '<p><strong>Température</strong> contrôle la créativité : 0 = déterministe et factuel, 1+ = créatif et varié. Pour les tâches agentiques (extraction, analyse), utilise 0 à 0.3. Pour la génération de contenu, 0.7 à 1.</p>' +
+      '<hr class="divider">' +
+      '<div class="quiz-cta"><div class="quiz-cta-text"><h3>Prêt à valider ?</h3><p>5 questions · ~3 min</p></div>' +
+      '<button class="btn btn-primary" onclick="startQuiz(1)">Démarrer le quiz →</button></div>',
+    quiz: [
+      {
+        q: 'Qu\'est-ce que la "fenêtre de contexte" d\'un LLM ?',
+        options: [
+          'L\'interface graphique du modèle',
+          'La quantité de RAM utilisée',
+          'L\'ensemble des informations disponibles au modèle lors d\'une inférence',
+          'Le nombre de requêtes par minute autorisées'
+        ],
+        answer: 2
+      },
+      {
+        q: 'Quelle technique consiste à fournir des exemples entrée/sortie dans le prompt ?',
+        options: [
+          'Chain-of-Thought',
+          'Few-Shot prompting',
+          'RAG',
+          'Fine-tuning'
+        ],
+        answer: 1
+      },
+      {
+        q: 'Pour une tâche d\'extraction de données structurées, quelle température recommandes-tu ?',
+        options: [
+          '0 à 0.3',
+          '0.7 à 1',
+          '1.5',
+          'La température n\'a pas d\'impact sur ce type de tâche'
+        ],
+        answer: 0
+      },
+      {
+        q: 'Que signifie RAG ?',
+        options: [
+          'Rapid Agent Generation',
+          'Retrieval-Augmented Generation',
+          'Recursive Attention Graph',
+          'Response Accuracy Gauge'
+        ],
+        answer: 1
+      },
+      {
+        q: 'Où placer les informations critiques dans un long prompt ?',
+        options: [
+          'Uniquement au milieu',
+          'Au début ET à la fin',
+          'L\'ordre n\'a aucune importance',
+          'Dans un fichier séparé'
+        ],
+        answer: 1
+      }
+    ]
+  },
+  {
+    id: 3,
+    title: 'Outils, mémoire & orchestration',
+    duration: '14 min',
+    content:
+      '<h3>Les outils : bras armés de l\'agent</h3>' +
+      '<p>Un LLM seul est limité à ce qu\'il sait déjà. Les <strong>outils</strong> lui donnent des capacités d\'action réelles : lire un fichier, appeler une API, exécuter du code, naviguer sur le web, envoyer un email.</p>' +
+      '<p>Techniquement, un outil est une fonction avec un nom, une description, et un schéma de paramètres (JSON Schema). Le modèle décide <em>quand</em> et <em>comment</em> l\'appeler. La réponse de l\'outil est injectée dans le contexte, et le modèle continue.</p>' +
+      '<div class="info-box"><div class="info-title">Exemples d\'outils courants</div><ul>' +
+      '<li><strong>search_web(query)</strong> — recherche internet en temps réel</li>' +
+      '<li><strong>read_file(path)</strong> — lecture d\'un document local ou cloud</li>' +
+      '<li><strong>call_api(url, params)</strong> — intégration avec n\'importe quel système</li>' +
+      '<li><strong>run_code(script)</strong> — exécution Python/JS pour calculs ou transformations</li>' +
+      '<li><strong>send_email(to, subject, body)</strong> — actions dans le monde réel</li>' +
+      '</ul></div>' +
+      '<h3>Les 4 types de mémoire agentique</h3>' +
+      '<p>La mémoire d\'un agent n\'est pas monolithique. On distingue :</p>' +
+      '<span class="definition-term">1. Mémoire In-Context</span>' +
+      '<p class="definition-body">Tout ce qui est dans la fenêtre de contexte active. Volatile : disparaît à la fin de la session. Rapide mais limitée en taille.</p>' +
+      '<span class="definition-term">2. Mémoire Externe (Vector Store)</span>' +
+      '<p class="definition-body">Base de données vectorielle (Pinecone, Weaviate, pgvector…). L\'agent y stocke et récupère des informations via recherche sémantique. Persistante et scalable.</p>' +
+      '<span class="definition-term">3. Mémoire Épisodique</span>' +
+      '<p class="definition-body">Historique structuré des interactions passées. Permet à l\'agent de "se souvenir" qu\'il a déjà traité un cas similaire et d\'en tirer des leçons.</p>' +
+      '<span class="definition-term">4. Mémoire Procédurale</span>' +
+      '<p class="definition-body">Les instructions système et les procédures encodées dans le prompt ou le fine-tuning. C\'est la "personnalité" et les "règles métier" de l\'agent.</p>' +
+      '<h3>Orchestration : qui dirige les agents ?</h3>' +
+      '<p>Dès qu\'on a plusieurs agents, il faut un chef d\'orchestre. Deux patterns principaux :</p>' +
+      '<ul>' +
+      '<li><strong>Orchestrateur central</strong> — un agent "manager" décompose la tâche, délègue aux agents spécialisés, agrège les résultats. Simple à déboguer, point de défaillance unique.</li>' +
+      '<li><strong>Peer-to-peer</strong> — les agents communiquent directement entre eux. Plus résilient, mais plus complexe à tracer et contrôler.</li>' +
+      '</ul>' +
+      '<div class="callout"><p><strong>Frameworks populaires :</strong> LangGraph, CrewAI, AutoGen, Coday (notre outil interne). Chacun implémente ces patterns différemment, mais les concepts sous-jacents sont identiques.</p></div>' +
+      '<hr class="divider">' +
+      '<div class="quiz-cta"><div class="quiz-cta-text"><h3>Prêt à valider ?</h3><p>5 questions · ~3 min</p></div>' +
+      '<button class="btn btn-primary" onclick="startQuiz(2)">Démarrer le quiz →</button></div>',
+    quiz: [
+      {
+        q: 'Qu\'est-ce qu\'un "outil" (tool) techniquement dans un système agentique ?',
+        options: [
+          'Un modèle de langage secondaire',
+          'Une fonction avec nom, description et schéma de paramètres que le modèle peut appeler',
+          'Un fichier de configuration JSON',
+          'Une interface utilisateur graphique'
+        ],
+        answer: 1
+      },
+      {
+        q: 'Quelle type de mémoire disparaît à la fin de la session ?',
+        options: [
+          'Mémoire externe (vector store)',
+          'Mémoire épisodique',
+          'Mémoire in-context',
+          'Mémoire procédurale'
+        ],
+        answer: 2
+      },
+      {
+        q: 'Un vector store est utilisé pour quel type de mémoire ?',
+        options: [
+          'Mémoire in-context',
+          'Mémoire procédurale',
+          'Mémoire externe persistante avec recherche sémantique',
+          'Mémoire de travail temporaire'
+        ],
+        answer: 2
+      },
+      {
+        q: 'Dans le pattern "orchestrateur central", quel est le principal inconvénient ?',
+        options: [
+          'Il est impossible à déboguer',
+          'Il ne peut gérer qu\'un seul agent',
+          'Point de défaillance unique',
+          'Il ne supporte pas les outils externes'
+        ],
+        answer: 2
+      },
+      {
+        q: 'La mémoire procédurale d\'un agent correspond à :',
+        options: [
+          'L\'historique des conversations passées',
+          'Les instructions système et règles métier encodées',
+          'Les résultats des appels d\'outils',
+          'La base de données vectorielle'
+        ],
+        answer: 1
+      }
+    ]
+  },
+  {
+    id: 4,
+    title: 'Fiabilité, évaluation & gestion des erreurs',
+    duration: '13 min',
+    content:
+      '<h3>Pourquoi les agents échouent</h3>' +
+      '<p>Un agent agentique peut échouer de nombreuses façons que les systèmes traditionnels ne connaissent pas. Comprendre ces modes de défaillance est essentiel pour construire des systèmes robustes.</p>' +
+      '<table class="error-table"><thead><tr><th>Type d\'erreur</th><th>Description</th><th>Mitigation</th></tr></thead><tbody>' +
+      '<tr><td><strong>Hallucination</strong></td><td>Le modèle invente des faits, des URLs, des noms</td><td>Grounding avec outils de vérification, RAG</td></tr>' +
+      '<tr><td><strong>Boucle infinie</strong></td><td>L\'agent tourne en rond sans progresser</td><td>Limite d\'étapes, détection de répétition</td></tr>' +
+      '<tr><td><strong>Drift d\'objectif</strong></td><td>L\'agent s\'éloigne de la tâche initiale</td><td>Rappel d\'objectif dans chaque prompt</td></tr>' +
+      '<tr><td><strong>Erreur d\'outil</strong></td><td>API down, mauvais paramètres, timeout</td><td>Try/catch, retry avec backoff, fallback</td></tr>' +
+      '<tr><td><strong>Injection de prompt</strong></td><td>Données malveillantes détournent l\'agent</td><td>Sanitisation des inputs, permissions minimales</td></tr>' +
+      '</tbody></table>' +
+      '<h3>Évaluation des agents (Evals)</h3>' +
+      '<p>Contrairement aux logiciels classiques, les agents n\'ont pas de tests unitaires simples. On utilise des <strong>évaluations</strong> (evals) :</p>' +
+      '<ul>' +
+      '<li><strong>Evals basées sur des critères</strong> — un LLM-juge note la réponse selon une rubrique (pertinence, exactitude, format).</li>' +
+      '<li><strong>Evals golden dataset</strong> — comparaison avec des réponses de référence validées par des humains.</li>' +
+      '<li><strong>Evals de trajectoire</strong> — on vérifie non seulement la réponse finale mais aussi les étapes intermédiaires (a-t-il appelé les bons outils ?).</li>' +
+      '</ul>' +
+      '<h3>Patterns de robustesse</h3>' +
+      '<div class="info-box"><div class="info-title">Bonnes pratiques</div><ul>' +
+      '<li><strong>Human-in-the-loop</strong> : pour les actions irréversibles (envoi d\'email, suppression de données), demander confirmation humaine.</li>' +
+      '<li><strong>Retry avec backoff exponentiel</strong> : réessayer les appels d\'outils qui échouent, avec des délais croissants.</li>' +
+      '<li><strong>Logging structuré</strong> : enregistrer chaque étape de la boucle agentique pour pouvoir déboguer.</li>' +
+      '<li><strong>Timeouts stricts</strong> : ne jamais laisser un agent tourner indéfiniment.</li>' +
+      '<li><strong>Principe du moindre privilège</strong> : donner à l\'agent uniquement les permissions dont il a besoin.</li>' +
+      '</ul></div>' +
+      '<div class="callout"><p><strong>Règle pratique :</strong> Commence toujours par un agent en mode "lecture seule" que tu observes avant de lui donner des capacités d\'écriture ou d\'action dans le monde réel.</p></div>' +
+      '<hr class="divider">' +
+      '<div class="quiz-cta"><div class="quiz-cta-text"><h3>Prêt à valider ?</h3><p>5 questions · ~3 min</p></div>' +
+      '<button class="btn btn-primary" onclick="startQuiz(3)">Démarrer le quiz →</button></div>',
+    quiz: [
+      {
+        q: 'Qu\'est-ce qu\'une "hallucination" dans le contexte des LLMs ?',
+        options: [
+          'Le modèle refuse de répondre',
+          'Le modèle invente des faits qui n\'existent pas',
+          'Le modèle répond trop lentement',
+          'Le modèle utilise trop de tokens'
+        ],
+        answer: 1
+      },
+      {
+        q: 'Qu\'est-ce que le "drift d\'objectif" ?',
+        options: [
+          'L\'agent change de modèle en cours d\'exécution',
+          'L\'agent s\'éloigne progressivement de la tâche initiale',
+          'Les paramètres du modèle évoluent pendant l\'inférence',
+          'L\'agent perd accès à ses outils'
+        ],
+        answer: 1
+      },
+      {
+        q: 'Pour quelle type d\'action faut-il absolument un "human-in-the-loop" ?',
+        options: [
+          'Lire un fichier texte',
+          'Effectuer une recherche web',
+          'Envoyer un email ou supprimer des données (actions irréversibles)',
+          'Générer un résumé'
+        ],
+        answer: 2
+      },
+      {
+        q: 'Les "evals de trajectoire" vérifient :',
+        options: [
+          'Uniquement la réponse finale',
+          'La vitesse d\'exécution de l\'agent',
+          'Les étapes intermédiaires et les outils appelés',
+          'Le coût en tokens'
+        ],
+        answer: 2
+      },
+      {
+        q: 'Que signifie "principe du moindre privilège" appliqué aux agents ?',
+        options: [
+          'L\'agent doit toujours utiliser le modèle le moins cher',
+          'L\'agent ne reçoit que les permissions strictement nécessaires à sa tâche',
+          'L\'agent doit minimiser le nombre d\'outils qu\'il appelle',
+          'L\'agent doit fonctionner sans mémoire externe'
+        ],
+        answer: 1
+      }
+    ]
+  },
+  {
+    id: 5,
+    title: 'Cas d\'usage CSD : delivery & ticketing',
+    duration: '14 min',
+    content:
+      '<h3>L\'agent de triage Jira</h3>' +
+      '<p>Le triage de tickets est une tâche chronophage, répétitive, et pourtant critique. Un agent agentique peut :</p>' +
+      '<ul>' +
+      '<li>Lire les nouveaux tickets entrants (via API Jira)</li>' +
+      '<li>Analyser le titre, la description, les pièces jointes</li>' +
+      '<li>Classifier automatiquement (bug, feature, question, incident)</li>' +
+      '<li>Assigner une priorité basée sur des critères métier</li>' +
+      '<li>Affecter au bon membre de l\'équipe selon les compétences et la charge</li>' +
+      '<li>Rédiger un premier commentaire de prise en charge</li>' +
+      '</ul>' +
+      '<div class="callout"><p><strong>Impact mesuré chez des équipes similaires :</strong> réduction de 60-70% du temps de triage manuel, amélioration du SLA de premier contact de 4h à 45min en moyenne.</p></div>' +
+      '<h3>L\'agent de suivi de delivery</h3>' +
+      '<p>Un agent peut surveiller en continu l\'avancement d\'un projet :</p>' +
+      '<ul>' +
+      '<li>Agréger les données Jira, Confluence, Git, calendrier</li>' +
+      '<li>Détecter les signaux de risque (tickets bloqués depuis N jours, jalons dépassés)</li>' +
+      '<li>Générer un rapport de statut hebdomadaire automatique</li>' +
+      '<li>Alerter proactivement le CSD si un livrable est en danger</li>' +
+      '</ul>' +
+      '<h3>L\'agent de préparation de réunion client</h3>' +
+      '<p>Avant chaque réunion client, l\'agent :</p>' +
+      '<ol>' +
+      '<li>Récupère l\'agenda depuis le calendrier</li>' +
+      '<li>Identifie le client et charge son contexte (historique tickets, derniers échanges)</li>' +
+      '<li>Génère un briefing structuré : points ouverts, risques, succès récents</li>' +
+      '<li>Propose des talking points adaptés aux enjeux du moment</li>' +
+      '</ol>' +
+      '<div class="info-box"><div class="info-title">Conditions de succès</div><ul>' +
+      '<li><strong>Données propres :</strong> un agent ne peut pas compenser des données Jira mal renseignées.</li>' +
+      '<li><strong>Périmètre clair :</strong> définir exactement ce que l\'agent fait et ne fait pas.</li>' +
+      '<li><strong>Validation humaine initiale :</strong> les 2-3 premières semaines, valider chaque output avant action.</li>' +
+      '<li><strong>Feedback loop :</strong> mécanisme pour corriger l\'agent quand il se trompe.</li>' +
+      '</ul></div>' +
+      '<hr class="divider">' +
+      '<div class="quiz-cta"><div class="quiz-cta-text"><h3>Prêt à valider ?</h3><p>5 questions · ~3 min</p></div>' +
+      '<button class="btn btn-primary" onclick="startQuiz(4)">Démarrer le quiz →</button></div>',
+    quiz: [
+      {
+        q: 'Quel est l\'un des impacts mesurés d\'un agent de triage Jira ?',
+        options: [
+          'Augmentation du nombre de tickets créés',
+          'Réduction de 60-70% du temps de triage manuel',
+          'Suppression du rôle de CSD',
+          'Doublement du coût des licences Jira'
+        ],
+        answer: 1
+      },
+      {
+        q: 'Qu\'est-ce qu\'un "signal de risque" pour un agent de suivi de delivery ?',
+        options: [
+          'Un ticket créé aujourd\'hui',
+          'Une réunion planifiée',
+          'Un ticket bloqué depuis N jours ou un jalon dépassé',
+          'Un nouveau membre dans l\'équipe'
+        ],
+        answer: 2
+      },
+      {
+        q: 'Pourquoi les données Jira propres sont-elles essentielles pour un agent ?',
+        options: [
+          'Pour réduire le coût des API',
+          'Un agent ne peut pas compenser des données mal renseignées',
+          'Pour accélérer le temps de réponse du modèle',
+          'Ce n\'est pas vraiment important'
+        ],
+        answer: 1
+      },
+      {
+        q: 'Lors des premières semaines de déploiement d\'un agent, que recommande-t-on ?',
+        options: [
+          'Laisser l\'agent agir de façon totalement autonome',
+          'Valider chaque output humainement avant action',
+          'Désactiver tous les outils d\'action',
+          'Utiliser uniquement des données fictives'
+        ],
+        answer: 1
+      },
+      {
+        q: 'Que génère l\'agent de préparation de réunion client ?',
+        options: [
+          'Une facture automatique',
+          'Un code de réduction',
+          'Un briefing structuré avec points ouverts, risques et talking points',
+          'Un rapport financier'
+        ],
+        answer: 2
+      }
+    ]
+  },
+  {
+    id: 6,
+    title: 'Coday : notre agent interne',
+    duration: '12 min',
+    content:
+      '<h3>Qu\'est-ce que Coday ?</h3>' +
+      '<p>Coday est l\'agent IA développé en interne chez Whoz, conçu spécifiquement pour les workflows du Cercle CSD. Ce n\'est pas un chatbot généraliste : c\'est un agent <strong>outillé et contextualisé</strong> sur nos outils métier (Jira, Confluence, calendriers, bases de connaissances).</p>' +
+      '<div class="info-box"><div class="info-title">Capacités actuelles de Coday</div><ul>' +
+      '<li>Lecture et analyse de tickets Jira</li>' +
+      '<li>Recherche dans Confluence</li>' +
+      '<li>Consultation du calendrier</li>' +
+      '<li>Génération de documents structurés</li>' +
+      '<li>Délégation à des sous-agents spécialisés</li>' +
+      '</ul></div>' +
+      '<h3>Architecture de Coday</h3>' +
+      '<p>Coday suit une architecture multi-agents avec un orchestrateur central :</p>' +
+      '<ol>' +
+      '<li><strong>Agent principal</strong> — reçoit ta requête, la décompose, orchestre les sous-agents</li>' +
+      '<li><strong>Sous-agents spécialisés</strong> — chacun expert d\'un domaine (Jira, docs, recherche…)</li>' +
+      '<li><strong>Couche d\'outils</strong> — APIs réelles connectées aux systèmes Whoz</li>' +
+      '</ol>' +
+      '<h3>Comment bien utiliser Coday</h3>' +
+      '<h4>Ce qui fonctionne bien</h4>' +
+      '<ul>' +
+      '<li>Requêtes avec contexte clair : "Analyse les tickets Jira du projet X ouverts depuis plus de 7 jours"</li>' +
+      '<li>Tâches de synthèse : "Résume les 10 derniers tickets critiques et identifie les patterns"</li>' +
+      '<li>Préparation de contenu : "Prépare un briefing pour la réunion de demain avec le client Y"</li>' +
+      '</ul>' +
+      '<h4>Ce qui fonctionne moins bien</h4>' +
+      '<ul>' +
+      '<li>Requêtes vagues sans contexte ("Aide-moi avec Jira")</li>' +
+      '<li>Tâches nécessitant un jugement humain fort (décisions stratégiques, relations sensibles)</li>' +
+      '<li>Données hors périmètre des outils connectés</li>' +
+      '</ul>' +
+      '<div class="callout"><p><strong>Conseil pratique :</strong> Traite Coday comme un collaborateur junior très capable mais qui a besoin de contexte. Plus tu lui donnes d\'informations précises, meilleur sera son output.</p></div>' +
+      '<hr class="divider">' +
+      '<div class="quiz-cta"><div class="quiz-cta-text"><h3>Prêt à valider ?</h3><p>5 questions · ~3 min</p></div>' +
+      '<button class="btn btn-primary" onclick="startQuiz(5)">Démarrer le quiz →</button></div>',
+    quiz: [
+      {
+        q: 'Coday est principalement :',
+        options: [
+          'Un chatbot généraliste comme ChatGPT',
+          'Un agent outillé et contextualisé sur les outils métier Whoz',
+          'Un système de ticketing alternatif à Jira',
+          'Un outil de visioconférence'
+        ],
+        answer: 1
+      },
+      {
+        q: 'Dans l\'architecture de Coday, quel est le rôle de l\'agent principal ?',
+        options: [
+          'Exécuter directement toutes les tâches sans délégation',
+          'Gérer uniquement les tickets Jira',
+          'Recevoir la requête, la décomposer et orchestrer les sous-agents',
+          'Servir d\'interface utilisateur'
+        ],
+        answer: 2
+      },
+      {
+        q: 'Quel type de requête fonctionne le mieux avec Coday ?',
+        options: [
+          '"Aide-moi avec Jira"',
+          '"Analyse les tickets du projet X ouverts depuis plus de 7 jours"',
+          '"Prends une décision stratégique sur notre roadmap"',
+          '"Gère mes relations avec ce client difficile"'
+        ],
+        answer: 1
+      },
+      {
+        q: 'Pourquoi Coday fonctionne-t-il moins bien pour les décisions stratégiques ?',
+        options: [
+          'Il n\'a pas accès à internet',
+          'Ces tâches nécessitent un jugement humain fort que l\'agent ne peut pas remplacer',
+          'Son modèle de langage est trop limité',
+          'Il ne peut pas traiter plus de 100 tokens'
+        ],
+        answer: 1
+      },
+      {
+        q: 'Comment doit-on traiter Coday selon le conseil pratique du module ?',
+        options: [
+          'Comme un oracle infaillible',
+          'Comme un outil purement automatique sans supervision',
+          'Comme un collaborateur junior capable mais nécessitant du contexte',
+          'Comme un simple moteur de recherche'
+        ],
+        answer: 2
+      }
+    ]
+  },
+  {
+    id: 7,
+    title: 'Sécurité, éthique & gouvernance',
+    duration: '13 min',
+    content:
+      '<h3>Les risques spécifiques aux agents IA</h3>' +
+      '<p>Les agents agentiques introduisent des risques nouveaux que les politiques de sécurité classiques ne couvrent pas toujours :</p>' +
+      '<ul>' +
+      '<li><strong>Prompt injection</strong> — des données malveillantes dans l\'environnement (un email, un fichier) peuvent détourner l\'agent de sa mission.</li>' +
+      '<li><strong>Escalade de privilèges</strong> — un agent conçu pour lire peut être manipulé pour écrire ou supprimer.</li>' +
+      '<li><strong>Fuite de données</strong> — l\'agent peut exfiltrer des informations sensibles via ses outils de sortie.</li>' +
+      '<li><strong>Actions irréversibles</strong> — contrairement à un humain qui hésite, un agent peut exécuter une suppression massive en quelques secondes.</li>' +
+      '</ul>' +
+      '<div class="callout"><p><strong>Cas réel :</strong> En 2024, plusieurs entreprises ont subi des incidents où des agents IA ont envoyé des emails non autorisés après avoir lu des instructions malveillantes dans des pièces jointes.</p></div>' +
+      '<h3>Principes de gouvernance</h3>' +
+      '<div class="info-box"><div class="info-title">Framework de gouvernance Whoz</div><ul>' +
+      '<li><strong>Transparence :</strong> tout output d\'agent doit être identifiable comme tel (pas de ghostwriting IA non déclaré).</li>' +
+      '<li><strong>Traçabilité :</strong> chaque action d\'un agent doit être loggée et auditable.</li>' +
+      '<li><strong>Responsabilité humaine :</strong> un humain reste responsable des décisions prises avec l\'aide d\'un agent.</li>' +
+      '<li><strong>Droit au recours :</strong> les parties prenantes peuvent toujours demander une révision humaine.</li>' +
+      '</ul></div>' +
+      '<h3>Éthique et biais</h3>' +
+      '<p>Les LLMs héritent des biais de leurs données d\'entraînement. Dans un contexte CSD :</p>' +
+      '<ul>' +
+      '<li>Un agent de priorisation peut favoriser certains types de clients ou de tickets sans raison objective.</li>' +
+      '<li>Un agent de rédaction peut adopter un ton inadapté à certaines cultures.</li>' +
+      '<li>Un agent d\'évaluation de performance peut reproduire des biais existants.</li>' +
+      '</ul>' +
+      '<p>La mitigation passe par des <strong>audits réguliers des outputs</strong>, des <strong>datasets d\'évaluation diversifiés</strong>, et une <strong>supervision humaine maintenue</strong> sur les décisions à impact élevé.</p>' +
+      '<hr class="divider">' +
+      '<div class="quiz-cta"><div class="quiz-cta-text"><h3>Prêt à valider ?</h3><p>5 questions · ~3 min</p></div>' +
+      '<button class="btn btn-primary" onclick="startQuiz(6)">Démarrer le quiz →</button></div>',
+    quiz: [
+      {
+        q: 'Qu\'est-ce que la "prompt injection" dans le contexte des agents ?',
+        options: [
+          'Une technique pour améliorer les prompts',
+          'Des données malveillantes dans l\'environnement qui détournent l\'agent',
+          'L\'injection de variables dans les prompts',
+          'Un bug de mémoire du modèle'
+        ],
+        answer: 1
+      },
+      {
+        q: 'Selon le framework Whoz, qui reste responsable des décisions prises avec l\'aide d\'un agent ?',
+        options: [
+          'Le développeur qui a créé l\'agent',
+          'L\'agent lui-même',
+          'Un humain',
+          'La direction informatique'
+        ],
+        answer: 2
+      },
+      {
+        q: 'Pourquoi les actions irréversibles sont-elles particulièrement risquées avec les agents ?',
+        options: [
+          'Elles coûtent plus cher en tokens',
+          'Un agent peut les exécuter en quelques secondes sans hésitation',
+          'Elles nécessitent plus de mémoire',
+          'Le modèle ne peut pas les comprendre'
+        ],
+        answer: 1
+      },
+      {
+        q: 'Comment mitiger les biais d\'un agent de priorisation ?',
+        options: [
+          'Utiliser un modèle plus récent',
+          'Augmenter la température',
+          'Audits réguliers des outputs et supervision humaine sur les décisions à impact élevé',
+          'Réduire le nombre d\'outils disponibles'
+        ],
+        answer: 2
+      },
+      {
+        q: 'La "traçabilité" dans la gouvernance des agents signifie :',
+        options: [
+          'Suivre les coûts d\'API',
+          'Chaque action d\'un agent doit être loggée et auditable',
+          'Tracer la position géographique des utilisateurs',
+          'Mesurer la vitesse de réponse'
+        ],
+        answer: 1
+      }
+    ]
+  },
+  {
+    id: 8,
+    title: 'Construire & itérer avec les agents',
+    duration: '14 min',
+    content:
+      '<h3>La méthode : commencer petit</h3>' +
+      '<p>L\'erreur classique est de vouloir construire un agent omniscient dès le départ. La bonne approche est itérative :</p>' +
+      '<ol>' +
+      '<li><strong>Identifier une tâche précise</strong> — pas "automatiser le delivery", mais "classer les tickets entrants en 4 catégories".</li>' +
+      '<li><strong>Construire l\'agent minimal</strong> — le minimum pour accomplir cette tâche, pas plus.</li>' +
+      '<li><strong>Évaluer sur des cas réels</strong> — mesurer la qualité sur 20-50 exemples réels, pas seulement des cas idéaux.</li>' +
+      '<li><strong>Itérer sur le prompt et les outils</strong> — affiner jusqu\'à atteindre un seuil de qualité acceptable.</li>' +
+      '<li><strong>Élargir progressivement</strong> — ajouter des capacités une à une, réévaluer à chaque étape.</li>' +
+      '</ol>' +
+      '<h3>Le Product Thinking appliqué aux agents</h3>' +
+      '<p>Un agent est un produit. Il a des utilisateurs, des cas d\'usage, des contraintes. Appliquer le product thinking :</p>' +
+      '<ul>' +
+      '<li><strong>Qui utilise l\'agent ?</strong> Quelles sont leurs attentes, leur niveau de confiance dans l\'IA ?</li>' +
+      '<li><strong>Quel problème résout-il vraiment ?</strong> Pas le problème imaginé, le problème réel observé.</li>' +
+      '<li><strong>Comment mesure-t-on le succès ?</strong> Temps gagné, qualité améliorée, erreurs réduites ?</li>' +
+      '<li><strong>Quel est le plan de fallback ?</strong> Si l\'agent échoue, que se passe-t-il ?</li>' +
+      '</ul>' +
+      '<h3>Debugging d\'agents</h3>' +
+      '<p>Déboguer un agent est différent de déboguer du code classique. Techniques :</p>' +
+      '<ul>' +
+      '<li><strong>Logging de chaque étape</strong> — afficher le raisonnement complet ("chain of thought") pour comprendre où ça déraille.</li>' +
+      '<li><strong>Isolation des composants</strong> — tester chaque outil séparément avant de les combiner.</li>' +
+      '<li><strong>Cas limites</strong> — tester explicitement les inputs inattendus, vides, malformés.</li>' +
+      '<li><strong>Replay</strong> — pouvoir rejouer une séquence d\'actions pour reproduire un bug.</li>' +
+      '</ul>' +
+      '<div class="callout"><p><strong>Mindset :</strong> Construire avec des agents, c\'est plus proche du coaching d\'une équipe que de la programmation classique. Tu définis les objectifs, les contraintes, et tu observes — puis tu ajustes.</p></div>' +
+      '<hr class="divider">' +
+      '<div class="quiz-cta"><div class="quiz-cta-text"><h3>Prêt à valider ?</h3><p>5 questions · ~3 min</p></div>' +
+      '<button class="btn btn-primary" onclick="startQuiz(7)">Démarrer le quiz →</button></div>',
+    quiz: [
+      {
+        q: 'Quelle est l\'erreur classique lors de la construction d\'un agent ?',
+        options: [
+          'Commencer par une tâche trop petite',
+          'Vouloir construire un agent omniscient dès le départ',
+          'Utiliser trop peu d\'outils',
+          'Ne pas écrire de documentation'
+        ],
+        answer: 1
+      },
+      {
+        q: 'Sur combien d\'exemples réels recommande-t-on d\'évaluer un agent ?',
+        options: [
+          '1 à 3',
+          '5 à 10',
+          '20 à 50',
+          'Plus de 1000'
+        ],
+        answer: 2
+      },
+      {
+        q: 'Que signifie "un agent est un produit" ?',
+        options: [
+          'Il doit être vendu à des clients',
+          'Il a des utilisateurs, des cas d\'usage, des contraintes, et un succès mesurable',
+          'Il doit avoir une interface graphique',
+          'Il doit être certifié ISO'
+        ],
+        answer: 1
+      },
+      {
+        q: 'Quelle technique de debugging consiste à afficher le raisonnement complet de l\'agent ?',
+        options: [
+          'Isolation des composants',
+          'Replay',
+          'Logging de chaque étape (chain of thought)',
+          'Tests de cas limites'
+        ],
+        answer: 2
+      },
+      {
+        q: 'Quelle analogie décrit le mieux le mindset de construction avec des agents ?',
+        options: [
+          'Programmer une calculatrice',
+          'Assembler des pièces LEGO',
+          'Coacher une équipe vers des objectifs',
+          'Rédiger un algorithme de tri'
+        ],
+        answer: 2
+      }
+    ]
+  },
+  {
+    id: 9,
+    title: 'Tendances & futur de l\'agentique',
+    duration: '11 min',
+    content:
+      '<h3>Où en est-on en 2025 ?</h3>' +
+      '<p>L\'écosystème agentique évolue à une vitesse sans précédent. Quelques repères :</p>' +
+      '<ul>' +
+      '<li><strong>Modèles frontier</strong> : GPT-4o, Claude 3.5/3.7, Gemini 2.0 sont capables de raisonner sur des tâches complexes multi-étapes.</li>' +
+      '<li><strong>Agents natifs</strong> : les grands fournisseurs (OpenAI, Anthropic, Google) intègrent directement des capacités agentiques dans leurs produits.</li>' +
+      '<li><strong>Coût en baisse rapide</strong> : le coût par token a chuté de ~95% en 2 ans, rendant les agents économiquement viables pour de nombreux cas d\'usage.</li>' +
+      '</ul>' +
+      '<h3>Tendances émergentes</h3>' +
+      '<h4>Computer Use</h4>' +
+      '<p>Des agents capables de contrôler directement une interface graphique (navigateur, applications desktop) comme un humain. Anthropic\'s Computer Use, OpenAI\'s Operator sont les précurseurs. Cela ouvre la porte à l\'automatisation de <em>tout</em> ce qui se fait via une interface.</p>' +
+      '<h4>Agents vocaux temps réel</h4>' +
+      '<p>La latence des modèles speech-to-speech est passée sous 300ms. Des agents vocaux peuvent maintenant conduire des conversations naturelles, gérer des appels clients, ou assister en temps réel lors de réunions.</p>' +
+      '<h4>Multi-agent à grande échelle</h4>' +
+      '<p>Des systèmes de dizaines ou centaines d\'agents spécialisés travaillant en parallèle sur des projets complexes. Les défis : coordination, cohérence, coût, traçabilité.</p>' +
+      '<h4>Standardisation des protocoles</h4>' +
+      '<p>Émergence de standards comme <strong>MCP (Model Context Protocol)</strong> d\'Anthropic pour la connexion outils/agents, et <strong>A2A (Agent-to-Agent)</strong> de Google pour la communication inter-agents.</p>' +
+      '<h3>Ce que ça signifie pour le CSD</h3>' +
+      '<div class="info-box"><div class="info-title">Horizon 2026</div><ul>' +
+      '<li>Les agents géreront de façon autonome 40-60% des tâches de triage et de reporting.</li>' +
+      '<li>Le rôle du CSD évoluera vers la <strong>supervision, la validation et la relation client complexe</strong>.</li>' +
+      '<li>La compétence clé ne sera plus de faire les tâches, mais de <strong>définir, évaluer et améliorer les agents</strong> qui les font.</li>' +
+      '</ul></div>' +
+      '<div class="callout"><p><strong>Conclusion :</strong> L\'agilité face à ces changements ne vient pas de savoir tout utiliser, mais de comprendre les principes fondamentaux — ce que ce programme t\'a donné.</p></div>' +
+      '<hr class="divider">' +
+      '<div class="quiz-cta"><div class="quiz-cta-text"><h3>Prêt à valider ?</h3><p>5 questions · ~3 min</p></div>' +
+      '<button class="btn btn-primary" onclick="startQuiz(8)">Démarrer le quiz →</button></div>',
+    quiz: [
+      {
+        q: 'De combien le coût par token a-t-il chuté en 2 ans (environ) ?',
+        options: [
+          '10%',
+          '50%',
+          '95%',
+          'Il a augmenté'
+        ],
+        answer: 2
+      },
+      {
+        q: 'Qu\'est-ce que le "Computer Use" dans le contexte agentique ?',
+        options: [
+          'L\'utilisation d\'ordinateurs quantiques pour les LLMs',
+          'Des agents capables de contrôler directement une interface graphique',
+          'Un protocole de communication entre agents',
+          'Une technique de compression de contexte'
+        ],
+        answer: 1
+      },
+      {
+        q: 'Que signifie MCP ?',
+        options: [
+          'Multi-Core Processing',
+          'Model Context Protocol',
+          'Machine Communication Platform',
+          'Memory Cache Protocol'
+        ],
+        answer: 1
+      },
+      {
+        q: 'Vers quoi évoluera principalement le rôle du CSD selon le module ?',
+        options: [
+          'Vers plus de tâches de triage manuel',
+          'Vers la programmation de modèles de langage',
+          'Vers la supervision, la validation et la relation client complexe',
+          'Vers la gestion de data centers'
+        ],
+        answer: 2
+      },
+      {
+        q: 'Quelle sera la compétence clé du CSD à l\'horizon 2026 ?',
+        options: [
+          'Maîtriser tous les frameworks agentiques',
+          'Coder des agents from scratch',
+          'Définir, évaluer et améliorer les agents',
+          'Gérer les coûts d\'infrastructure IA'
+        ],
+        answer: 2
+      }
+    ]
+  }
+];
+
+var RESOURCES = [
+  {
+    id: 'r1',
+    title: 'Référentiel de prompts CSD',
+    emoji: '📋',
+    meta: 'Référence · Toujours utile',
+    content:
+      '<h3>Bibliothèque de prompts pour le Cercle CSD</h3>' +
+      '<p>Cette ressource regroupe les prompts les plus utiles pour tes cas d\'usage quotidiens. Copie-les directement dans Coday ou tout autre outil LLM.</p>' +
+      '<hr class="divider">' +
+      '<h3>🎯 Triage & Analyse de tickets</h3>' +
+      '<div class="info-box">' +
+      '<div class="info-title">Prompt : Analyse et classification de ticket</div>' +
+      '<p>Utilise ce prompt en passant le contenu du ticket en contexte.</p>' +
+      '<p style="font-family:monospace;font-size:13px;background:var(--gray-100);padding:14px;border-radius:8px;line-height:1.6;white-space:pre-wrap;">Tu es un expert en Customer Success & Delivery IT.
+
+Analyse le ticket suivant et fournis :
+1. CLASSIFICATION : [Bug / Feature Request / Question / Incident / Autre]
+2. PRIORITÉ : [P1-Critique / P2-Haute / P3-Normale / P4-Basse] avec justification
+3. RÉSUMÉ : 2 phrases max
+4. ACTIONS SUGGÉRÉES : liste les 2-3 prochaines étapes concrètes
+5. COMPÉTENCES REQUISES : quelles expertises sont nécessaires ?
+
+Ticket :
+[COLLER LE CONTENU DU TICKET ICI]</p>' +
+      '</div>' +
+      '<div class="info-box">' +
+      '<div class="info-title">Prompt : Détection de patterns sur plusieurs tickets</div>' +
+      '<p style="font-family:monospace;font-size:13px;background:var(--gray-100);padding:14px;border-radius:8px;line-height:1.6;white-space:pre-wrap;">Voici une liste de tickets des 30 derniers jours pour le projet [NOM].
+
+Identifie :
+1. Les 3 problèmes récurrents principaux
+2. Les composants/fonctionnalités les plus touchés
+3. Les patterns temporels (pics d\'incidents, corrélations)
+4. Une recommandation d\'action prioritaire
+
+Formate en markdown avec des sections claires.
+
+[LISTE DES TICKETS]</p>' +
+      '</div>' +
+      '<hr class="divider">' +
+      '<h3>📋 Préparation de réunions</h3>' +
+      '<div class="info-box">' +
+      '<div class="info-title">Prompt : Briefing pré-réunion client</div>' +
+      '<p style="font-family:monospace;font-size:13px;background:var(--gray-100);padding:14px;border-radius:8px;line-height:1.6;white-space:pre-wrap;">Tu prépares une réunion avec le client [NOM CLIENT].
+
+Contexte disponible :
+- Tickets ouverts : [LISTE]
+- Dernière réunion : [DATE + RÉSUMÉ]
+- Engagements pris : [LISTE]
+
+Génère un briefing avec :
+1. STATUT GLOBAL : feu vert/orange/rouge avec justification
+2. POINTS À ABORDER : par ordre de priorité
+3. RISQUES À ANTICIPER : ce qui pourrait mal tourner
+4. TALKING POINTS POSITIFS : succès récents à valoriser
+5. QUESTIONS À POSER : pour mieux comprendre les enjeux client</p>' +
+      '</div>' +
+      '<hr class="divider">' +
+      '<h3>📊 Reporting & Synthèse</h3>' +
+      '<div class="info-box">' +
+      '<div class="info-title">Prompt : Rapport de statut hebdomadaire</div>' +
+      '<p style="font-family:monospace;font-size:13px;background:var(--gray-100);padding:14px;border-radius:8px;line-height:1.6;white-space:pre-wrap;">Génère un rapport de statut hebdomadaire pour le projet [NOM].
+
+Données de la semaine :
+- Tickets créés : [N]
+- Tickets résolus : [N]
+- Tickets en cours : [LISTE]
+- Incidents critiques : [LISTE]
+- Jalons atteints : [LISTE]
+
+Format attendu :
+## Statut semaine [N] — [PROJET]
+### 🟢/🟡/🔴 Statut global
+### Faits marquants
+### Points d\'attention
+### Prochaines étapes</p>' +
+      '</div>' +
+      '<hr class="divider">' +
+      '<h3>💬 Communication client</h3>' +
+      '<div class="info-box">' +
+      '<div class="info-title">Prompt : Réponse à un client mécontent</div>' +
+      '<p style="font-family:monospace;font-size:13px;background:var(--gray-100);padding:14px;border-radius:8px;line-height:1.6;white-space:pre-wrap;">Un client exprime son insatisfaction concernant [PROBLÈME].
+
+Contexte :
+- Historique du problème : [RÉSUMÉ]
+- Ce qui a été fait : [ACTIONS]
+- Ce qui reste à faire : [ÉTAPES]
+
+Rédige une réponse professionnelle qui :
+1. Reconnaît l\'impact sur le client
+2. Explique clairement ce qui s\'est passé (sans jargon technique)
+3. Présente les actions correctives en cours
+4. Donne une échéance réaliste
+5. Propose un suivi proactif
+
+Ton : empathique, factuel, orienté solution. 150 mots max.</p>' +
+      '</div>'
+  }
+];
+
+// ═══════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════
+
+var progress = JSON.parse(localStorage.getItem('csd-progress') || '{}');
+var currentModuleIdx = 0;
+var currentIsResource = false;
+var currentResourceIdx = 0;
+
+function saveProgress() {
+  localStorage.setItem('csd-progress', JSON.stringify(progress));
+}
+
+// ═══════════════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════════════
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function goHome() {
+  renderHome();
+  showScreen('screen-home');
+}
+
+function goToModule() {
+  showScreen('screen-module');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER HOME
+// ═══════════════════════════════════════════════════════════════
+
+function renderHome() {
+  var completed = Object.values(progress).filter(Boolean).length;
+  var total = MODULES.length;
+  var pct = Math.round((completed / total) * 100);
+
+  document.getElementById('home-progress-text').textContent = completed + ' / ' + total;
+  document.getElementById('home-progress-fill').style.width = pct + '%';
+
+  var list = document.getElementById('module-list');
+  list.innerHTML = '';
+  MODULES.forEach(function(m, i) {
+    var done = !!progress['m' + m.id];
+    var card = document.createElement('button');
+    card.className = 'module-card' + (done ? ' completed' : '');
+    card.onclick = function() { openModule(i); };
+    card.innerHTML =
+      '<div class="module-num">' + m.id + '</div>' +
+      '<div class="module-info">' +
+        '<div class="module-title">' + m.title + '</div>' +
+        '<div class="module-meta">' + m.duration + ' de lecture</div>' +
+      '</div>' +
+      '<div class="module-status">' +
+        '<span class="badge ' + (done ? 'badge-done' : 'badge-todo') + '">' +
+          (done ? '✓ Fait' : 'À faire') +
+        '</span>' +
+      '</div>' +
+      '<svg class="chevron" width="16" height="16" viewBox="0 0 16 16" fill="none">' +
+        '<path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '</svg>';
+    list.appendChild(card);
+  });
+
+  var rlist = document.getElementById('resource-list');
+  rlist.innerHTML = '';
+  RESOURCES.forEach(function(r, i) {
+    var done = !!progress['r' + r.id];
+    var card = document.createElement('button');
+    card.className = 'resource-card' + (done ? ' completed' : '');
+    card.onclick = function() { openResource(i); };
+    card.innerHTML =
+      '<div class="resource-num">' + r.emoji + '</div>' +
+      '<div class="module-info">' +
+        '<div class="module-title">' + r.title + '</div>' +
+        '<div class="module-meta">' + r.meta + '</div>' +
+      '</div>' +
+      '<div class="module-status">' +
+        '<span class="badge badge-ref' + (done ? ' badge-done' : '') + '">' +
+          (done ? '✓ Consulté' : '📖 Référence') +
+        '</span>' +
+      '</div>' +
+      '<svg class="chevron" width="16" height="16" viewBox="0 0 16 16" fill="none">' +
+        '<path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '</svg>';
+    rlist.appendChild(card);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// OPEN MODULE
+// ═══════════════════════════════════════════════════════════════
+
+function openModule(idx) {
+  currentModuleIdx = idx;
+  currentIsResource = false;
+  var m = MODULES[idx];
+
+  document.getElementById('mod-eyebrow').textContent = 'Module ' + m.id;
+  document.getElementById('mod-title').textContent = m.title;
+  document.getElementById('mod-duration').textContent = m.duration + ' de lecture';
+  document.getElementById('mod-content').innerHTML = m.content;
+
+  showScreen('screen-module');
+}
+
+function openResource(idx) {
+  currentResourceIdx = idx;
+  currentIsResource = true;
+  var r = RESOURCES[idx];
+
+  document.getElementById('mod-eyebrow').textContent = 'Ressource';
+  document.getElementById('mod-title').textContent = r.title;
+  document.getElementById('mod-duration').textContent = r.meta;
+  document.getElementById('mod-content').innerHTML = r.content;
+
+  progress['r' + r.id] = true;
+  saveProgress();
+
+  showScreen('screen-module');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// QUIZ
+// ═══════════════════════════════════════════════════════════════
+
+function startQuiz(moduleIdx) {
+  currentModuleIdx = moduleIdx;
+  var m = MODULES[moduleIdx];
+
+  document.getElementById('quiz-eyebrow').textContent = 'Quiz — Module ' + m.id;
+  document.getElementById('quiz-title').textContent = m.title;
+  document.getElementById('quiz-subtitle').textContent = m.quiz.length + ' questions · Seuil de réussite : ' + Math.ceil(m.quiz.length * 0.6) + '/' + m.quiz.length;
+
+  var container = document.getElementById('quiz-questions');
+  container.innerHTML = '';
+
+  m.quiz.forEach(function(q, qi) {
+    var block = document.createElement('div');
+    block.className = 'question-block';
+
+    var optionsHtml = '';
+    q.options.forEach(function(opt, oi) {
+      optionsHtml +=
+        '<label class="option-label" id="opt-' + qi + '-' + oi + '">' +
+          '<input type="radio" name="q' + qi + '" value="' + oi + '">' +
+          '<span class="option-icon" id="icon-' + qi + '-' + oi + '"></span>' +
+          '<span>' + opt + '</span>' +
+        '</label>';
+    });
+
+    block.innerHTML =
+      '<div class="question-num">Question ' + (qi + 1) + ' / ' + m.quiz.length + '</div>' +
+      '<div class="question-text">' + q.q + '</div>' +
+      '<div class="options">' + optionsHtml + '</div>';
+
+    container.appendChild(block);
+  });
+
+  document.getElementById('quiz-submit-btn').style.display = 'inline-flex';
+  showScreen('screen-quiz');
+}
+
+function submitQuiz() {
+  var m = MODULES[currentModuleIdx];
+  var score = 0;
+
+  m.quiz.forEach(function(q, qi) {
+    var selected = document.querySelector('input[name="q' + qi + '"]:checked');
+    var selectedVal = selected ? parseInt(selected.value) : -1;
+
+    q.options.forEach(function(opt, oi) {
+      var label = document.getElementById('opt-' + qi + '-' + oi);
+      var icon = document.getElementById('icon-' + qi + '-' + oi);
+      label.classList.add('disabled');
+
+      if (oi === q.answer) {
+        if (selectedVal === oi) {
+          label.classList.add('correct');
+          icon.textContent = '✓';
+          score++;
+        } else {
+          label.classList.add('was-correct');
+          icon.textContent = '✓';
+        }
+      } else if (selectedVal === oi) {
+        label.classList.add('wrong');
+        icon.textContent = '✗';
+      }
+    });
+  });
+
+  document.getElementById('quiz-submit-btn').style.display = 'none';
+
+  setTimeout(function() { showResult(score, m.quiz.length); }, 800);
+}
+
+function showResult(score, total) {
+  var passed = score >= Math.ceil(total * 0.6);
+  var m = MODULES[currentModuleIdx];
+
+  if (passed) {
+    progress['m' + m.id] = true;
+    saveProgress();
+  }
+
+  document.getElementById('result-icon').className = 'result-icon ' + (passed ? 'pass' : 'fail');
+  document.getElementById('result-icon').textContent = passed ? '🎉' : '💪';
+  document.getElementById('result-score').textContent = score + '/' + total;
+  document.getElementById('result-title').textContent = passed ? 'Module validé !' : 'Pas tout à fait...';
+  document.getElementById('result-message').textContent = passed
+    ? 'Bravo ! Tu maîtrises les concepts clés de ce module.'
+    : 'Relis le module et réessaie. Tu y es presque !';
+  document.getElementById('result-retry-btn').style.display = passed ? 'none' : 'inline-flex';
+
+  showScreen('screen-result');
+}
+
+function retryQuiz() {
+  startQuiz(currentModuleIdx);
+}
+
+function resetProgress() {
+  if (confirm('Réinitialiser toute la progression ?')) {
+    progress = {};
+    saveProgress();
+    renderHome();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════
+
+renderHome();
+</script>
+</body>
+</html>
